@@ -4,7 +4,6 @@ pipeline {
         choice(name: 'dev', defaultValue: 'default', description: 'Workspace/environment file to use for deployment')
         choice(name: 'version', defaultValue: '', description: 'Version variable to pass to Terraform')
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan')
-        choice{(name: "AWS_REGION", choices: ["us-east-2", "us-west-1"], description: "AWS region to deploy the resources")
     }
      environment {
          DEPLOYMENT_ROLE='jenkins deployment role'
