@@ -1,44 +1,43 @@
 pipeline {
-    agent any 
+    agent any
+
     parameters {
-        choice(name: 'dev', defaultValue: 'default', description: 'Workspace/environment file to use for deployment')
-        choice(name: 'version', defaultValue: '', description: 'Version variable to pass to Terraform')
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan')
-        choice{(name: "AWS_REGION", choices: ["us-east-2", "us-west-2"], description: "AWS region to deploy the resources")
+        string(name: 'environment', defaultValue: 'default', description: 'Workspace/environment file to use for deployment')
+        string(name: 'version', defaultValue: '', description: 'Version variable to pass to Terraform')
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
     }
-     environment {
-         DEPLOYMENT_ROLE='jenkins deployment role'
-         GITHUB_CREDENTIALS='need token'  //it needs admin access to the repo so that it can push to master (without pr request) 
-        AWS_ACCESS_KEY_ID     = credentials('AKIASI56IEMAOPQDJABR')
-        AWS_SECRET_ACCESS_KEY = credentials('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')
+    
+    environment {
+        AWS_ACCESS_KEY_ID     = ('AKIASI56IEMAOPQDJABR')
+        AWS_SECRET_ACCESS_KEY = ('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')
         TF_IN_AUTOMATION      = '1'
     }
 
     stages {
-        stage ('git clone') {
+        stage('Plan') {
             steps {
-                git credentialsId: 'ramesh', url: 'https://github.com/rameshmedari/github'
+                script {
+                    currentBuild.displayName = params.version
                 }
-            }
-        stage ('terraform init') {
-            steps {
-                sh "terraform init -input=false"
+                sh 'terraform init -input=false'
+                sh 'terraform workspace select ${environment}'
+                sh "terraform plan -input=false -out tfplan -var 'version=${params.version}' --var-file=environments/${params.environment}.tfvars"
+                sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
-        steps {
-                script {
-                    def plan = readFile 'tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                        parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-                }
-            }
-            
+
+        
+
         stage('Apply') {
             steps {
                 sh "terraform apply -input=false tfplan"
             }
         }
+    }
 
+    post {
+        always {
+            archiveArtifacts artifacts: 'tfplan.txt'
         }
     }
-    
+}
