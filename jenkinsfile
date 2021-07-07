@@ -10,7 +10,6 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID     = ('AKIASI56IEMAOPQDJABR')
         AWS_SECRET_ACCESS_KEY = ('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')
-        env.jenkins = "/usr/bin/java/workspace"
         TF_IN_AUTOMATION      = '1'
     }
 
@@ -22,7 +21,7 @@ pipeline {
                 }
                 sh 'terraform init -input=false'
                 sh 'terraform workspace select ${environment}'
-                sh 'terraform plan $env.jenkins = "/usr/bin/java/workspace"
+                sh "terraform plan -input=false -out tfplan -var 'version=${params.version}' --var -file=environments/${params.environment}.tfvars"
             }
         }
 
