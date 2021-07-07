@@ -10,7 +10,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID     = ('AKIASI56IEMAOPQDJABR')
         AWS_SECRET_ACCESS_KEY = ('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')
-        env.jenkins_path = "/usr/bin/java/workspace"
+        env.jenkins = "/usr/bin/java/workspace"
         TF_IN_AUTOMATION      = '1'
     }
 
