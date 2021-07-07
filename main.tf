@@ -1,6 +1,5 @@
 #Create security group with firewall rules
 resource "aws_security_group" "security_jenkins_port" {
-  key_name = "var.jenkins"
   name        = "security_jenkins_sg"
   description = "security group for jenkins"
 
