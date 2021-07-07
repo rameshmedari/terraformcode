@@ -21,7 +21,7 @@ pipeline {
                 }
                 sh 'terraform init -input=false'
                 sh 'terraform workspace select ${environment}'
-                sh "terraform plan"
+                sh 'terraform plan -out myplan'
             }
         }
 
