@@ -1,4 +1,3 @@
-key_name = "jenkins.pem" 
 #Create security group with firewall rules
 resource "aws_security_group" "security_jenkins_port" {
   name        = "security_jenkins_sg"
