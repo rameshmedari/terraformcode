@@ -22,7 +22,7 @@ pipeline {
                 }
                 sh 'terraform init -input=false'
                 sh 'terraform workspace select ${environment}'
-                sh 'terraform plan $env.jenkins_path = "/usr/bin/java/workspace"
+                sh 'terraform plan $env.jenkins = "/usr/bin/java/workspace"
             }
         }
 
